@@ -1,0 +1,91 @@
+<ion-view title="Board" ng-init="findAllNodes()">
+    
+    <ion-nav-buttons side="left">
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+    </ion-nav-buttons>
+    
+    <ion-content class="has-header">
+
+        <div class="card" ng-repeat="node in allNodes">        
+            <div class="item item-text-wrap">
+                <div class="item item-divider">
+                    {{node.title}}
+                    <p>by {{node.username}} on {{node.creationDate | prettyDate}}</p>
+                </div>
+                <div class="item item-text-wrap">
+                    {{node.body}}
+                </div>
+                <div class="item tabs tabs-secondary tabs-icon-left">
+                <a class="tab-item positive" href="#" ng-click="editNode.openModal(node._id, node.title, node.body)">
+                    <i class="icon ion-edit"></i>
+                    Edit
+                </a>
+                <a class="tab-item assertive" href="#" ng-click="deleteNode(node._id)">
+                    <i class="icon ion-trash-a"></i>
+                    Delete
+                </a>
+                </div>
+        </div>
+    </div>
+
+
+    </ion-content>
+
+    <ion-footer-bar>
+        <div class="button-bar bar-positive">
+            <button class="button button-icon button-clear button-balanced" ng-click="findAllNodes()">
+                <i ng-hide="loadingNodes" class="icon ion-loop"></i>
+                <i ng-show="loadingNodes" class="icon ion-looping"></i>
+            </button>
+            <button class="button button-icon button-clear button-positive" ng-click="newNode.openModal()">
+                <i class="icon ion-plus"></i>
+            </button>
+        </div>
+    </ion-footer-bar>
+    
+    <!-- New Node Modal -->
+    <script id="newNodeModal.html" type="text/ng-template">
+    <div class="modal">
+        <header class="bar bar-header bar-positive">
+            <h1 class="title">Add Node</h1>
+            <div class="button button-clear" ng-click="newNode.closeModal()"><span class="icon ion-close"></span></div>
+        </header>
+        <br><br>
+
+        <form name="createPost" ng-submit="createNode(newNode.nodeTitle, newNode.nodeBody)">
+            <div class="list list-inset">
+            <label class="item item-input">
+                <input type="text" placeholder="Enter title" ng-model="newNode.nodeTitle">
+            </label>
+            <label class="item item-input">
+                <textarea type="text" name="body" placeholder="Enter body" ng-model="newNode.nodeBody"></textarea>
+            </label>
+            </div>
+            <button class="button button-block button-positive" type="submit">Submit</button>
+        </form>
+    </div>
+    </script>
+
+    <!-- Edit Node Modal -->
+    <script id="editNodeModal.html" type="text/ng-template">
+    <div class="modal">
+        <header class="bar bar-header bar-positive">
+            <h1 class="title">Edit Node</h1>
+            <div class="button button-clear" ng-click="editNode.closeModal()"><span class="icon ion-close"></span></div>
+        </header>
+        <br><br>
+
+        <form name="updatePost" ng-submit="updateNode(editNode.nodeNID, editNode.nodeTitle, editNode.nodeBody)">
+            <div class="list list-inset">
+            <label class="item item-input">
+                <input type="text" placeholder="Enter title" ng-model="editNode.nodeTitle">
+            </label>
+            <label class="item item-input">
+                <textarea type="text" name="body" placeholder="Enter body" ng-model="editNode.nodeBody"></textarea>
+            </label>
+            </div>
+            <button class="button button-block button-positive" type="submit">Submit</button>
+        </form>
+    </div>
+    </script>
+</ion-view>

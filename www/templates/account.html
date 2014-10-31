@@ -1,0 +1,85 @@
+<ion-view title="Account">
+    <ion-nav-buttons side="left">
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+    </ion-nav-buttons>
+    
+    <ion-content class="has-header">
+
+        <!-- Logout form -->
+        <div ng-show="isSession()" style="text-align: center;">
+            <h3>You are currenty logged in.</h3>
+
+            <form name="accountLogout">
+                <button ng-click="logout()" class="button button-block button-positive">Logout </button>    
+            </form>
+        </div>
+
+        
+        <!-- Login form -->
+        <div ng-show="!isSession() && !create">
+            <div style="text-align: center;">
+                <h3>Login to your Account:</h3>
+                <p>or <a href="" ng-click="create = true">Create an account.</a></p>
+            </div>
+
+            <form name="accountLogin" ng-submit="authAccount(username, password)">
+            <div class="list">
+                <label class="item item-input item-floating-label">
+                    <span class="input-label">Username</span>
+                    <input type="text" name="username" placeholder="Username" ng-model="username">
+                </label>
+                <label class="item item-input item-floating-label">
+                    <span class="input-label">Password</span>
+                    <input type="password" name="password" placeholder="Password" ng-model="password">
+                </label>
+            </div>
+
+            <button type="submit" class="button button-block button-positive">Login</button>
+
+            </form>
+        </div>
+
+        
+        <!-- Create an account form -->
+        <div ng-show="!isSession() && create">
+            <div style="text-align: center;">
+                <h3>Create an Account:</h3>
+                <p>or <a href="" ng-click="create = false">Login to your account.</a></p>
+            </div>
+
+            <form name="accountCreate" ng-hide="isSession()" ng-submit="createAccount(username, email, password)">
+            <div class="list">
+                <label class="item item-input item-floating-label">
+                    <span class="input-label">Username</span>
+                    <input type="text" name="username" placeholder="Username" ng-model="username">
+                </label>
+                <label class="item item-input item-floating-label">
+                    <span class="input-label">Email</span>
+                    <input type="email" name="email" placeholder="Email" ng-model="email">
+                </label>
+                <label class="item item-input item-floating-label">
+                    <span class="input-label">Password</span>
+                    <input type="password" name="password" placeholder="Password" ng-model="password">
+                </label>
+            </div>
+
+            <button ng-disabled="accountCreate.username.$dirty && accountCreate.email.$dirty && accountCreate.email.$invalid" type="submit" class="button button-block button-positive">
+              Create Account
+            </button>    
+
+            </form>
+        </div>
+
+        
+        <!-- Error section -->
+        <div id="errorSection">
+            <div class="error" ng-show="accountCreate.email.$dirty && accountCreate.email.$invalid">
+                Please enter a proper email address.
+            </div>
+            <div class="error" ng-show="!isSession()">
+                {{errorMessage}}
+            </div>
+        </div>
+        
+    </ion-content>
+</ion-view>

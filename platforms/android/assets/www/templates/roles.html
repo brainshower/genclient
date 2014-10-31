@@ -1,0 +1,119 @@
+<ion-view title="Role" ng-init="loadAllRoles()">
+    
+    <ion-nav-buttons side="left">
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+    </ion-nav-buttons>
+
+    <ion-content class="has-header">
+        
+        <div class="card">
+            <div ng-repeat="role in roles">
+                <div class="item item-divider">
+                    <em>Role:</em> {{role.name}}
+                    <!--<a ng-click="newPermGroup.openModal(role.name)">(+)</a>-->
+                    <div class="card">
+                        <div ng-repeat="(permGroup, perms) in role.permGroups">
+                            <div class="item">
+                                <em>Group: {{permGroup}}</em>
+                                <!--<a ng-click="newPerm.openModal(role.name, permGroup)">(+)</a>-->
+                                <div class="card">
+                                    <div ng-repeat="(perm, value) in perms">
+                                        <div class="item item-toggle">
+                                            {{perm}}
+                                            <label class="toggle toggle-balanced">
+                                                <input type="checkbox" ng-change="setPerm(role, permGroup, perm, value)" ng-model="value">
+                                                <div class="track">
+                                                <div class="handle"></div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="item tabs tabs-secondary tabs-icon-left">
+                    <a class="tab-item" ng-click="deleteRole(role.name)">
+                        <i class="icon ion-close"></i>
+                        Delete Role
+                    </a>
+                </div>                
+            </div>
+        </div>
+            
+    </ion-content>
+
+    <ion-footer-bar>
+        <div class="button-bar">
+            <button class="button button-icon button-clear button-balanced" ng-click="loadAllRoles()">
+                <i ng-hide="loadingRoles" class="icon ion-loop"></i>
+                <i ng-show="loadingRoles" class="icon ion-looping"></i>
+            </button>
+            <button class="button button-icon button-clear button-positive" ng-click="newRole.openModal()">
+                <i class="icon ion-plus"></i>
+            </button>
+        </div>
+    </ion-footer-bar>
+
+    <!-- New Role Modal -->
+    <script id="newRoleModal.html" type="text/ng-template">
+    <div class="modal">
+        <header class="bar bar-header bar-positive">
+            <h1 class="title">Add Role</h1>
+            <div class="button button-clear" ng-click="newRole.closeModal()"><span class="icon ion-close"></span></div>
+        </header>
+        <br><br>
+
+        <form ng-submit="createRole(roleName)">
+            <div class="list list-inset">
+            <label class="item item-input">
+                <input type="text" placeholder="Enter role name" ng-model="roleName">
+            </label>
+            </div>
+            <button class="button button-block button-positive" type="submit">Add</button>
+        </form>
+    </div>
+    </script>
+
+    <!-- New Permission Group Modal -->
+    <script id="newPermGroupModal.html" type="text/ng-template">
+    <div class="modal">
+        <header class="bar bar-header bar-positive">
+            <h1 class="title">Add Permission Group</h1>
+            <div class="button button-clear" ng-click="newPermGroup.closeModal()"><span class="icon ion-close"></span></div>
+        </header>
+        <br><br>
+
+        <form ng-submit="createPermGroup(newPermGroup.roleName, newPermGroup.permGroupName)">
+            <div class="list list-inset">
+            <label class="item item-input">
+                <input type="text" placeholder="Enter permission group name" ng-model="newPermGroup.permGroupName">
+            </label>
+            </div>
+            <button class="button button-block button-positive" type="submit">Add</button>
+        </form>
+    </div>
+    </script>
+    
+    <!-- New Permission -->
+    <script id="newPermModal.html" type="text/ng-template">
+    <div class="modal">
+        <header class="bar bar-header bar-positive">
+            <h1 class="title">Add Permission</h1>
+            <div class="button button-clear" ng-click="newPerm.closeModal()"><span class="icon ion-close"></span></div>
+        </header>
+        <br><br>
+
+        <form ng-submit="createPerm(newPerm.roleName, newPerm.permGroupName, newPerm.permName)">
+            <div class="list list-inset">
+            <label class="item item-input">
+                <input type="text" placeholder="Enter permission name" ng-model="newPerm.permName">
+            </label>
+            </div>
+            <button class="button button-block button-positive" type="submit">Add</button>
+        </form>
+    </div>
+    </script>
+
+</ion-view>

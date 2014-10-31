@@ -1,0 +1,32 @@
+<ion-view title="Users" ng-init="loadAllUsers()">
+    
+    <ion-nav-buttons side="left">
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+    </ion-nav-buttons>
+
+    <ion-content class="has-header">
+        
+        <div class="list">
+            <div ng-repeat="user in users">
+                <label class="item item-input item-select item-divider">
+                    <div class="input-label">
+                        {{user.username}}
+                    </div>
+                    <select ng-model="addRole" ng-change="assignUserRole(user.username, addRole)" ng-options="role for role in roles">
+                    </select>
+                </label>
+                <div ng-repeat="role in user.roles">
+                    <div class="item item-button-right">
+                        {{role}}
+                        <button ng-click="removeUserRole(user.username, role)" class="button button-default">
+                            <i class="icon ion-close"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </ion-content>
+    
+</ion-view>
