@@ -1,9 +1,10 @@
 // Prefixes for localstorage
-var STORAGEPREFIX = "austintechjobs.";
+var STORAGEPREFIX = "genclient.";
 var AUTHSTORAGE = STORAGEPREFIX + "auth"
 
 // Web API URLs
-var SITEPREFIX   = "http://www.msgme.info:3000";
+//var SITEPREFIX   = "http://www.msgme.info:3000";
+var SITEPREFIX   = "http://localhost:3000";
 var AUTHAPI      = SITEPREFIX + "/login";
 
 // Node API
@@ -145,8 +146,37 @@ angular.module('starter.services', [])
                     createNodeDeferred.resolve(success);
                 },
                 function (fail) {
-                    console.log("Node.createNode: Fail callback called.  fail = " + JSON.stringify(fail));
-                    createNodeDeferred.reject(fail);
+
+                    if (fail) {
+                        console.log("Node.createNode: Fail callback called.  fail = " + JSON.stringify(fail));
+                        createNodeDeferred.reject(fail);
+                    }
+                    else {
+                        // No session information, so this is presumably an anonymous user.
+                        console.log("Node.createNode: Could not find session.  Assuming anonymous.");
+                        var node = {
+                            title: title,
+                            body: body ? body : null,
+                        };
+                        var data = {
+                            session: null,
+                            data: node,
+                        }
+
+                        console.log("Node.createNode: title " + title + ", body " + body);
+
+                        $http.post(NODEAPI_CREATE, data).success(function (data, status, headers, config) {
+                            console.log("Node.createNode: Resolved data:");
+                            console.log(data);
+                            createNodeDeferred.resolve(data);
+                        }).error(function(data, status, headers, config) {
+                            console.log("Node.createNode: Rejected data:");
+                            console.log(data);
+                            createNodeDeferred.reject(data);
+                        });                        
+                    }
+
+
                 }
             );
 
@@ -194,8 +224,38 @@ angular.module('starter.services', [])
                     nodeDeferred.resolve(success);
                 },
                 function (fail) {
-                    console.log("Node.updateNode: Fail callback called.  fail = " + JSON.stringify(fail));
-                    nodeDeferred.reject(fail);
+
+                    if (fail) {
+                        console.log("Node.updateNode: Fail callback called.  fail = " + JSON.stringify(fail));
+                        nodeDeferred.reject(fail);
+                    }
+                    else {
+                        // No session information, so this is presumably an anonymous user.
+                        console.log("Node.updateNode: Could not find session.  Assuming anonymous.");
+                        var putData = {
+                            session: null,
+                            data: {},
+                        }
+
+                        if (title) {
+                            putData.data.title = title;   
+                        }
+                        if (body) {
+                            putData.data.body = body;
+                        }
+
+                        console.log("Node.updateNode:");
+    
+                        $http.post(NODEAPI_UPDATE+"/"+nid, putData).success(function (data, status, headers, config) {
+                            console.log("Node.updateNode: Resolved data:");
+                            console.log(data);
+                            nodeDeferred.resolve(data);
+                        }).error(function(data, status, headers, config) {
+                            console.log("Node.updateNode: Rejected data:");
+                            console.log(data);
+                            nodeDeferred.reject(data);
+                        });
+                    }
                 }
             );
 
@@ -235,8 +295,30 @@ angular.module('starter.services', [])
                     nodeDeferred.resolve(success);
                 },
                 function (fail) {
-                    console.log("Node.deleteNode: Fail callback called.  fail = " + JSON.stringify(fail));
-                    nodeDeferred.reject(fail);
+
+                    if (fail) {
+                        console.log("Node.deleteNode: Fail callback called.  fail = " + JSON.stringify(fail));
+                        nodeDeferred.reject(fail);
+                    }
+                    else {
+                        // No session information, so this is presumably an anonymous user.
+                        console.log("Node.deleteNode: Could not find session.  Assuming anonymous.");
+                        var postData = {
+                            session: null,
+                        }
+
+                        console.log("Node.deleteNode:");
+    
+                        $http.post(NODEAPI_DELETE+"/"+nid, postData).success(function (data, status, headers, config) {
+                            console.log("Node.deleteNode: Resolved data:");
+                            console.log(data);
+                            nodeDeferred.resolve(data);
+                        }).error(function(data, status, headers, config) {
+                            console.log("Node.deleteNode: Rejected data:");
+                            console.log(data);
+                            nodeDeferred.reject(data);
+                        });
+                    }
                 }
             );
 
@@ -278,12 +360,42 @@ angular.module('starter.services', [])
                     nodeDeferred.resolve(success);
                 },
                 function (fail) {
-                    console.log("Node.findAllNodes: Fail callback called.  fail = " + JSON.stringify(fail));
-                    nodeDeferred.reject(fail);
+
+                    if (fail) {
+                        console.log("Node.findAllNodes: Fail callback called.  fail = " + JSON.stringify(fail));
+                        nodeDeferred.reject(fail)
+                    }
+                    else {
+                        // No session information, so this is presumably an anonymous user.
+                        console.log("Node.findAllNodes: Could not find session.  Assuming anonymous.");
+                        var data = {
+                            session: null,
+                        }
+
+                        // TODO: I don't like this because deferred is not used.  Look at this again sometime.
+                        //var deferred = $q.defer();
+
+                        console.log("Node.findAllNodes:");
+
+                        $http.post(NODEAPI_FINDALL, data).success(function (data, status, headers, config) {
+                            console.log("Node.findAllNodes: Resolved data:");
+                            console.log(data);
+                            //deferred.resolve(data);
+                            nodeDeferred.resolve(data);
+                        }).error(function(data, status, headers, config) {
+                            console.log("Node.findAllNodes: Rejected data:");
+                            console.log(data);
+                            //deferred.reject(data);
+                            nodeDeferred.reject(data);
+                        });
+
+                        //return deferred.promise;
+                    }
                 }
             );
 
             return nodeDeferred.promise;
+
         },
         
     } // return
