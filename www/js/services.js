@@ -15,6 +15,10 @@ var NODEAPI_FINDID = NODEAPI;
 var NODEAPI_UPDATE = NODEAPI + "/update";
 var NODEAPI_DELETE = NODEAPI + "/delete";
 
+// Job API -- TESTING
+var JOBAPI      = SITEPREFIX + "/job";
+var JOBAPI_CREATE = JOBAPI;
+
 // Admin Role API
 var ROLEAPI      = SITEPREFIX + "/admin/role";
 var ROLEAPI_GETROLES = ROLEAPI + "/getroles";
@@ -107,6 +111,83 @@ angular.module('starter.services', [])
             }
         },
 
+
+        // Create a job --- TESTING!
+        createJob : function(title, body, company) {
+
+            var createNodeDeferred = $q.defer();
+            
+            this._authHandler(
+                function(session) {
+                    var node = {
+                        title: title ? title : null,
+                        body: body ? body : null,
+                        company : company ? company : null,
+                    };
+                    var data = {
+                        session: session,
+                        data: node,
+                    }
+
+                    var deferred = $q.defer();
+                    
+                    console.log("Node.createJob: title " + title + ", body " + body + ", session " + JSON.stringify(session));
+
+                    $http.post(JOBAPI_CREATE, data).success(function (data, status, headers, config) {
+                        console.log("Node.createJob: Resolved data:");
+                        console.log(data);
+                        deferred.resolve(data);
+                    }).error(function(data, status, headers, config) {
+                        console.log("Node.createJob: Rejected data:");
+                        console.log(data);
+                        deferred.reject(data);
+                    });
+                    
+                    return deferred.promise;
+                    
+                },
+                function (success) {
+                    console.log("Node.createJob: Success callback called.  success = " + JSON.stringify(success));
+                    createNodeDeferred.resolve(success);
+                },
+                function (fail) {
+
+                    if (fail) {
+                        console.log("Node.createJob: Fail callback called.  fail = " + JSON.stringify(fail));
+                        createNodeDeferred.reject(fail);
+                    }
+                    else {
+                        // No session information, so this is presumably an anonymous user.
+                        console.log("Node.createJob: Could not find session.  Assuming anonymous.");
+                        var node = {
+                            title: title,
+                            body: body ? body : null,
+                        };
+                        var data = {
+                            session: null,
+                            data: node,
+                        }
+
+                        console.log("Node.createJob: title " + title + ", body " + body);
+
+                        $http.post(JOBAPI_CREATE, data).success(function (data, status, headers, config) {
+                            console.log("Node.createJob: Resolved data:");
+                            console.log(data);
+                            createNodeDeferred.resolve(data);
+                        }).error(function(data, status, headers, config) {
+                            console.log("Node.createJob: Rejected data:");
+                            console.log(data);
+                            createNodeDeferred.reject(data);
+                        });                        
+                    }
+
+
+                }
+            );
+
+            return createNodeDeferred.promise;
+
+        },
 
         // Create a node passing in a title and optional body.
         createNode : function(title, body) {

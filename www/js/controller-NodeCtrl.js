@@ -19,6 +19,17 @@ controllerModule.controller('NodeCtrl', function($scope, $ionicSideMenuDelegate,
         );  
     }
 
+    $scope.createJob = function (title, body, company) {
+        Nodes.createJob(title, body, company).then(
+            function (success) {
+                $scope.findAllNodes();
+            },
+            function (fail) {
+                console.log("createJob (controller):  fail = " + JSON.stringify(fail));
+            }
+        );  
+    }
+
     $scope.updateNode = function (nid, title, body) {
         Nodes.updateNode(nid, title, body).then(
             function(success) {
