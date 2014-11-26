@@ -15,6 +15,10 @@ var NODEAPI_FINDID = NODEAPI;
 var NODEAPI_UPDATE = NODEAPI + "/update";
 var NODEAPI_DELETE = NODEAPI + "/delete";
 
+// Comment API
+var COMMENTAPI      = SITEPREFIX + "/comment";
+var COMMENTAPI_CREATE = COMMENTAPI;
+
 // Job API -- TESTING
 var JOBAPI      = SITEPREFIX + "/job";
 var JOBAPI_CREATE = JOBAPI;
@@ -112,7 +116,7 @@ angular.module('starter.services', [])
         },
 
 
-        // Create a job --- TESTING!
+        // Create a job --- TESTING ONLY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         createJob : function(title, body, company) {
 
             var createNodeDeferred = $q.defer();
@@ -176,6 +180,84 @@ angular.module('starter.services', [])
                             createNodeDeferred.resolve(data);
                         }).error(function(data, status, headers, config) {
                             console.log("Node.createJob: Rejected data:");
+                            console.log(data);
+                            createNodeDeferred.reject(data);
+                        });                        
+                    }
+
+
+                }
+            );
+
+            return createNodeDeferred.promise;
+
+        },
+
+        // Create a comment node
+        createComment : function(parentNID, commentText) {
+
+            var createNodeDeferred = $q.defer();
+            
+            this._authHandler(
+                function(session) {
+                    var node = {
+                        title: null,
+                        body: commentText ? commentText : null,
+                        parent : parentNID ? parentNID : null,
+                    };
+                    var data = {
+                        session: session,
+                        data: node,
+                    }
+
+                    var deferred = $q.defer();
+                    
+                    console.log("Node.createComment: " + commentText + ", session " + JSON.stringify(session) );
+
+                    $http.post(COMMENTAPI_CREATE, data).success(function (data, status, headers, config) {
+                        console.log("Node.createComment: Resolved data:");
+                        console.log(data);
+                        deferred.resolve(data);
+                    }).error(function(data, status, headers, config) {
+                        console.log("Node.createComment: Rejected data:");
+                        console.log(data);
+                        deferred.reject(data);
+                    });
+                    
+                    return deferred.promise;
+                    
+                },
+                function (success) {
+                    console.log("Node.createComment: Success callback called.  success = " + JSON.stringify(success));
+                    createNodeDeferred.resolve(success);
+                },
+                function (fail) {
+
+                    if (fail) {
+                        console.log("Node.createComment: Fail callback called.  fail = " + JSON.stringify(fail));
+                        createNodeDeferred.reject(fail);
+                    }
+                    else {
+                        // No session information, so this is presumably an anonymous user.
+                        console.log("Node.createComment: Could not find session.  Assuming anonymous.");
+                        var node = {
+                            title: null,
+                            body: commentText ? commentText : null,
+                            parent : parentNID ? parentNID : null,
+                        };
+                        var data = {
+                            session: session,
+                            data: node,
+                        }
+
+                        console.log("Node.createComment: " + commentText);
+
+                        $http.post(COMMENTAPI_CREATE, data).success(function (data, status, headers, config) {
+                            console.log("Node.createComment: Resolved data:");
+                            console.log(data);
+                            createNodeDeferred.resolve(data);
+                        }).error(function(data, status, headers, config) {
+                            console.log("Node.createComment: Rejected data:");
                             console.log(data);
                             createNodeDeferred.reject(data);
                         });                        

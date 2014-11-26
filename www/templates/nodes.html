@@ -24,6 +24,10 @@
                     <i class="icon ion-trash-a"></i>
                     Delete
                 </a>
+                <a class="tab-item positive" href="#" ng-click="newComment.openModal(node._id)">
+                    <i class="icon ion-edit"></i>
+                    Add Comment
+                </a>                
                 </div>
         </div>
     </div>
@@ -91,4 +95,25 @@
         </form>
     </div>
     </script>
+
+    <!-- New Comment Modal -->
+    <script id="newCommentModal.html" type="text/ng-template">
+    <div class="modal">
+        <header class="bar bar-header bar-positive">
+            <h1 class="title">Add Comment</h1>
+            <div class="button button-clear" ng-click="newComment.closeModal()"><span class="icon ion-close"></span></div>
+        </header>
+        <br><br>
+
+        <form name="createPost" ng-submit="createComment(newComment.parentNID, newComment.comment)">
+            <div class="list list-inset">
+            <label class="item item-input">
+                <textarea type="text" name="comment" placeholder="Enter comment" ng-model="newComment.comment"></textarea>
+            </label>
+            </div>
+            <button class="button button-block button-positive" type="submit">Submit</button>
+        </form>
+    </div>
+    </script>
+
 </ion-view>

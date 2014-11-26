@@ -30,6 +30,18 @@ controllerModule.controller('NodeCtrl', function($scope, $ionicSideMenuDelegate,
         );  
     }
 
+    $scope.createComment = function (parentNID, comment) {
+        Nodes.createComment(parentNID, comment).then(
+            function (success) {
+                $scope.newComment.closeModal();
+                $scope.findAllNodes();
+            },
+            function (fail) {
+                console.log("createComment (controller):  fail = " + JSON.stringify(fail));
+            }
+        );  
+    }
+
     $scope.updateNode = function (nid, title, body) {
         Nodes.updateNode(nid, title, body).then(
             function(success) {
@@ -134,6 +146,32 @@ controllerModule.controller('NodeCtrl', function($scope, $ionicSideMenuDelegate,
         animation: 'slide-in-up',
         focusFirstInput: true,
     });  
+
+
+    // Add comment node modal
+    $ionicModal.fromTemplateUrl('newCommentModal.html', function($ionicModal) {
+        
+        $scope.newComment = {}
+        $scope.newComment.comment = "";
+        $scope.newComment.modal = $ionicModal;
+        
+        $scope.newComment.openModal = function (parentNID) {
+            $scope.newComment.parentNID = parentNID;
+            $scope.newComment.modal.show();
+        };
+        
+        $scope.newComment.closeModal = function() {
+            $scope.newComment.modal.hide();
+        }
+        
+    }, {
+        // Use our scope for the scope of the modal to keep it simple
+        scope: $scope,
+        // The animation we want to use for the modal entrance
+        animation: 'slide-in-up',
+        focusFirstInput: true,
+    });  
+
 });
 
 
